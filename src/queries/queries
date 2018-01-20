@@ -1,0 +1,293 @@
+INITIAL EXAMPLES
+  query ($deptId: ID!) {
+    allModels {
+      _prodsMeta (filter: {
+        dept: {
+          id: $deptId
+        }
+      }) {
+       count
+      }
+      id
+      name
+    }
+  }
+
+  query ($deptId: ID!) {
+    allModels(filter: {
+      prods_some: {
+        dept: {
+          id: $deptId
+        }
+      }
+    }) {
+      id
+      name
+    }
+  }
+
+  query {
+    allDepts {
+      _prodsMeta {
+       count
+      }
+      id
+      name
+    }
+  }
+
+  https://github.com/graphcool/framework/issues/40
+  query {
+    slowlife: allGenres(filter: {key: SLOW_LIFE}) {
+      _vinylsMeta {
+  			count
+      }
+      key
+    }
+
+    timelink: allGenres(filter: {key: TIMELINK}) {
+      _vinylsMeta {
+  			count
+      }
+      key
+    }
+  }
+
+-----------------------------------------------------------------------
+https://www.graph.cool/forum/t/mutation-inside-a-graphcool-function/239
+  var mutation = `
+  	mutation {
+  		createTagging (
+  			tags: "${tagsToCreate}",
+  			userId: "${fakeUserId}
+  		) {
+  			id
+  		}
+  	}
+  `
+  return fetch(API, {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ mutation })
+  }).then((response) => {
+  	return response.json()
+  }).then((data) => {
+  	console.log(data)
+  	return event
+  }).catch((err) => {
+  	console.log(err)
+  })
+
+-----------------------------------------------------------------------
+https://www.graph.cool/docs/reference/graphql-api/overview-abogasd0go/
+  const { request } = require('graphql-request')
+
+  module.exports = function (event) {
+    console.log('Received event')
+    console.log(event.data)
+
+    const mutation = `{
+      createDeptModel(
+        deptId: "cjbuuv9ka4s3l0162qzn4zy5x",
+        modelId: "cjc0d2ck96c4s0147y9zppoty",
+        prodCount: 1
+      ) {
+        id
+      }
+    }`
+
+    console.log('Mutation data')
+    request('https://api.graph.cool/simple/v1/cjbuug4g90oz80127p4yshxxf', mutation).then(data => console.log(data))
+
+  }
+
+!!!!!WORKING IN RESOLVERS _-----------------------------------------------------
+  var fetch = require("isomorphic-fetch")
+
+  module.exports = function (event) {
+
+    var query = `
+      query {
+        allDeptModels {
+          id
+  		dept {
+  			id
+  		}
+  		model {
+  			id
+  		}
+        }
+      }
+    `
+    return fetch('https://api.graph.cool/simple/v1/cjbuug4g90oz80127p4yshxxf', {
+          method: 'post',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': ''
+          },
+          body: JSON.stringify({ query: query })
+    }).then((response) => {
+        return response.json()
+    }).then((data) => {
+        console.log(data)
+        return event
+    }).catch((err) => {
+        console.log(err)
+    })
+  }
+
+_______________________________________________________________________________
+It basically iterates over the data and then deletes all items one by one. It does so in batches of 100.
+  https://github.com/graphcool/graphcool/issues/81
+  const logsQuery = `
+  query getLogs {
+    logs: allLogs(first: 100, orderBy: timestamp_ASC) {
+      id
+    }
+  }`
+
+  const logsDeleteQuery = `
+  mutation deleteLog(
+   $id: ID!
+  ) {
+    deleteLog(id: $id) {
+      id
+    }
+  }`
+
+  let count = 0
+
+  function deleteAll() {
+    console.log('Fetching new Events')
+    return Graph(logsQuery).then((res) => {
+      console.log(res)
+      if (res && res.logs.length > 0) {
+        count = count + res.logs.length
+        console.log('Deleting ' + res.logs.length + '(' + count + ') events...')
+
+        return Promise.all(res.logs.map(l => {
+          console.log('Deleting event ' + l.id)
+          return Graph(logsDeleteQuery, {id: l.id})
+        }))
+      }  else {
+        console.log('finished!')
+      }
+    })
+    .then((res) => deleteAll())
+    .catch((e) => console.log(e))
+  }
+
+SIMULTANIOUS ASYNC FETCH ----------------------------------------------------------
+var fetch = require("isomorphic-fetch")
+
+module.exports = function (event) {
+
+  var API = 'https://api.graph.cool/simple/v1/cjbuug4g90oz80127p4yshxxf'
+  var fetchConf = (query) => ({
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer '
+    },
+    body: JSON.stringify({ query: query })
+  })
+
+  fetchFn = (query) => fetch(API, fetchConf(query))
+    .then((response) => {
+      return response.json()
+  }).then((data) => {
+      return data
+  }).catch((err) => {
+      console.log(err)
+  })
+
+  console.log('> moveProds')
+  console.log(event)
+
+  var deptId = event.data.to
+  // var deptId = 'cjbuuv9ka4s3l0162qzn4zy5x'
+  var prodIds = event.data.prodIds
+  // var prodIds = ['cjcen5c0t3oq901784tue90px']
+
+  var findProd = (prodId) => `
+    query {
+      Prod (id: "${prodId}") {
+        id
+        model {
+          id
+        }
+      }
+    }
+  `
+
+  var findOrCreateDeptModel = (modelId) => `
+    mutation {
+      findOrCreateDeptModel (
+        deptId: "${deptId}",
+        modelId: "${modelId}"
+      ) { deptModelId }
+    }
+  `
+
+  var updateProd = (prodId, deptModelId) => `
+    mutation {
+      updateProd (
+        id:"${prodId}"
+        deptId: "${deptId}"
+        deptModelId: "${deptModelId}"
+      ) {
+        id
+      }
+    }
+  `
+
+  console.log(23)
+
+  returnFn = (bool) => ({
+    data: {
+      success: bool
+    }
+  })
+
+  return Promise.all(prodIds.map(prodId => {
+    return fetchFn(findProd(prodId)).then((data) => {
+      console.log(data)
+      // var modelId = data.data.createDeptModel ? data.data.createDeptModel.id : ''
+      var modelId = data.data.Prod.model.id
+      if (modelId) {
+        return fetchFn(findOrCreateDeptModel(modelId)).then((data) => {
+          console.log(data)
+          var deptModelId = data.data.findOrCreateDeptModel.deptModelId
+          if (deptModelId) {
+            return fetchFn(updateProd(prodId, deptModelId)).then((data) => {
+              console.log(data)
+              // var updatedProdId = data.data.findOrCreateDeptModel.deptModelId
+              var updatedProdId = data.data.updateProd.id
+              if (updatedProdId) {
+                return updatedProdId
+              } else {
+                return false
+              }
+            })
+          } else {
+            return false
+          }
+        })
+      } else {
+        return false
+      }
+    })
+    // return fetchFn(updateProd(prodId))
+  })).then(values => {
+    console.log(values)
+    return {
+      data: {
+        success: true
+      }
+    }
+  })
+
+}
+SYNC FETCH ----------------------------------------------------------

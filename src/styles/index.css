@@ -1,0 +1,24 @@
+/* SEMANTIC UI FIXES */
+
+.ui.accordion {
+  margin-top: 0 !important
+}
+
+.ui.segment:first-child {
+  margin-top: 1rem !important;
+}
+
+.ui.accordion .accordion .title .dropdown.icon.large, .ui.accordion .title .dropdown.icon.large {
+  font-size: 1.5rem !important;
+}
+
+.fs1-25rem {
+  font-size: 1.25rem !important;
+}
+
+.addclass {
+  max-width: 700px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  border-radius: 0.285714rem;
+}
