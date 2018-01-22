@@ -35,6 +35,8 @@ class MoveModal extends Component {
 
   render() {
     const { open, deptId } = this.state
+    const { trigger } = this.props
+
     const query = this.props.AllDeptsAndModelsQuery
     const deptOptions = !query ? [ { text: 'Участок ', value: 'cjbuuv9ka4s3l0162qzn4zy5x' } ] :
       query.loading ? [ { text: 'Загрузка списка', value: 'cjbuuv9ka4s3l0162qzn4zy5x' } ] :
@@ -48,7 +50,7 @@ class MoveModal extends Component {
 
     return (
       <Modal
-        trigger={<Icon name='arrow right' />}
+        trigger={trigger}
         open={open}
         onOpen={this.open}
         onClose={this.close}

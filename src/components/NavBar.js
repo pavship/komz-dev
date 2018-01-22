@@ -24,18 +24,22 @@ class NavBar extends Component {
       <div>
         <Menu size='large' inverted >
           {/* <Container text> */}
-          <Menu.Item header>KOMZ</Menu.Item>
+          <Menu.Item header as={ NavLink } exact to='/'>KOMZ</Menu.Item>
           {userId &&
             <Menu.Menu>
-              <Menu.Item icon name='home' as={ NavLink } exact to='/' color='grey'>
+              {/* <Menu.Item icon name='home' as={ NavLink } exact to='/' color='grey'>
                 <Icon name='home' />
-              </Menu.Item>
-              <Menu.Item icon link name='create' color='grey'>
-                <CreateProdModal />
-              </Menu.Item>
-              <Menu.Item icon link name='move' color='grey'>
-                <MoveModal moveProds={this.props.moveProds} />
-              </Menu.Item>
+              </Menu.Item> */}
+              <CreateProdModal trigger={
+                <Menu.Item icon link name='create' color='grey'>
+                  <Icon name='plus' />
+                </Menu.Item>
+              } />
+              <MoveModal moveProds={this.props.moveProds} trigger={
+                <Menu.Item icon link name='move' color='grey'>
+                  <Icon name='arrow right' />
+                </Menu.Item>
+              } />
             </Menu.Menu>
           }
           <Menu.Menu position='right'>

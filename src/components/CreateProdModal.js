@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { graphql, compose } from 'react-apollo'
 import gql from 'graphql-tag'
-import { Modal, Form, Icon, Button } from 'semantic-ui-react'
+import { Modal, Form, Menu, Icon, Button } from 'semantic-ui-react'
 import { GC_USER_ID } from '../constants'
 
 const AllDeptsAndModelsQuery = gql`
@@ -81,6 +81,8 @@ class CreateProdModal extends Component {
 
   render() {
     const { open } = this.state
+    const { trigger } = this.props
+
     const query = this.props.AllDeptsAndModelsQuery
     const deptOptions = !query ? [ { text: 'Участок ', value: 'cjbuuv9ka4s3l0162qzn4zy5x' } ] :
       query.loading ? [ { text: 'Загрузка списка', value: 'cjbuuv9ka4s3l0162qzn4zy5x' } ] :
@@ -102,7 +104,12 @@ class CreateProdModal extends Component {
       })
     return (
       <Modal
-        trigger={<Icon name='plus' />}
+        trigger = { trigger }
+        // trigger={
+        //   <Menu.Item icon link name='create' color='grey'>
+        //     <Icon name='plus' />
+        //   </Menu.Item>
+        // }
         open={open}
         onOpen={this.open}
         onClose={this.close}
