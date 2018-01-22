@@ -43,12 +43,11 @@ class CreateProdModal extends Component {
 
   state = {
     open: false,
-    deptId: 'cjbuuv9ka4s3l0162qzn4zy5x',
-    modelId: 'cjbuv06lu4oq40147jl77mgck',
-    modelId1: 'cjbuv06lu4oq40147jl77mgck',
-    melt: 1,
+    deptId: '',
+    modelId: '',
+    melt: '',
     meltShift: 0,
-    number: 1,
+    number: '',
     year: 17
   }
   open = () => this.setState({ open: true })
@@ -80,22 +79,22 @@ class CreateProdModal extends Component {
   }
 
   render() {
-    const { open } = this.state
+    const { open, deptId, modelId } = this.state
     const { trigger } = this.props
 
     const query = this.props.AllDeptsAndModelsQuery
-    const deptOptions = !query ? [ { text: 'Участок ', value: 'cjbuuv9ka4s3l0162qzn4zy5x' } ] :
-      query.loading ? [ { text: 'Загрузка списка', value: 'cjbuuv9ka4s3l0162qzn4zy5x' } ] :
-      query.error ? [ { text: 'Ошибка загрузки списка', value: 'cjbuuv9ka4s3l0162qzn4zy5x' } ] :
+    const deptOptions = !query ? [ { text: 'Участок ', value: '' } ] :
+      query.loading ? [ { text: 'Загрузка списка', value: '' } ] :
+      query.error ? [ { text: 'Ошибка загрузки списка', value: '' } ] :
       query.allDepts.map(dept => {
         return {
           text: dept.name,
           value:  dept.id
         }
       })
-    const modelOptions = !query ? [ { text: 'Вид продукции', value: 'cjbuv06lu4oq40147jl77mgck' } ] :
-      query.loading ? [ { text: 'Загрузка списка', value: 'cjbuv06lu4oq40147jl77mgck' } ] :
-      query.error ? [ { text: 'Ошибка загрузки списка', value: 'cjbuv06lu4oq40147jl77mgck' } ] :
+    const modelOptions = !query ? [ { text: 'Вид продукции', value: '' } ] :
+      query.loading ? [ { text: 'Загрузка списка', value: '' } ] :
+      query.error ? [ { text: 'Ошибка загрузки списка', value: '' } ] :
       query.allModels.map(model => {
         return {
           text: model.name,
@@ -105,11 +104,6 @@ class CreateProdModal extends Component {
     return (
       <Modal
         trigger = { trigger }
-        // trigger={
-        //   <Menu.Item icon link name='create' color='grey'>
-        //     <Icon name='plus' />
-        //   </Menu.Item>
-        // }
         open={open}
         onOpen={this.open}
         onClose={this.close}
@@ -117,19 +111,19 @@ class CreateProdModal extends Component {
         <Modal.Header as='h2'> Добавить продукцию </Modal.Header>
         <Modal.Content>
           <Form onSubmit={() => this._confirm()}>
-            <Form.Select label='Участок' options={deptOptions} onChange={this.handleChange3} value={this.state.deptId}/>
-            <Form.Select label='Вид продукции' options={modelOptions} onChange={this.handleChange4} value={this.state.modelId}/>
+            <Form.Select label='Участок' options={deptOptions} onChange={this.handleChange3} value={deptId} required/>
+            <Form.Select label='Вид продукции' options={modelOptions} onChange={this.handleChange4} value={modelId} required/>
             <Form.Group widths='equal'>
-              <Form.Input label='Плавка' placeholder='Плавка'
+              <Form.Input label='Плавка' placeholder='Плавка' required
                 type="number" min="1" max="999"
                 onChange={(e) => this.setState({ melt: parseInt(e.target.value, 10) })} value={this.state.melt}/>
               <Form.Input label='Плав. смена (0 - если не промаркирована)' placeholder='Пл. смена'
                 type="number" min="1" max="3"
                 onChange={(e) => this.setState({ meltShift: parseInt(e.target.value, 10) }) } value={this.state.meltShift}/>
-              <Form.Input label='Номер' placeholder='Номер'
+              <Form.Input label='Номер' placeholder='Номер' required
                 type="number" min="1" max="999"
                 onChange={(e) => this.setState({ number: parseInt(e.target.value, 10) })} value={this.state.number}/>
-              <Form.Input label='Год' placeholder='Год'
+              <Form.Input label='Год' placeholder='Год' required
                 type="number" min="16" max="18"
                 onChange={(e) => this.setState({ year: parseInt(e.target.value, 10) })} value={this.state.year}/>
             </Form.Group>
