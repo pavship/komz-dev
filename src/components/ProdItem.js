@@ -8,7 +8,7 @@ class ProdItem extends Component {
 
   handleClick = (e, d) => {
     const { checked } = this.state
-    const { id } = this.props
+    const { id } = this.props.prod
     console.log(d)
     this.setState({checked: !checked})
     this.props.selectProd(id)
@@ -16,13 +16,15 @@ class ProdItem extends Component {
 
   render() {
     const {checked} = this.state
+    const {fullnumber, isSpoiled} = this.props.prod
 
     return (
       <List.Item onClick={this.handleClick} active={checked}>
         <List.Icon name={checked ? 'checkmark box' : 'square outline'} />
         <List.Content>
-          {this.props.title}
+          {fullnumber}
         </List.Content>
+        { isSpoiled && <List.Icon floated='right' name='broken chain' color='red' /> }
       </List.Item>
     )
   }

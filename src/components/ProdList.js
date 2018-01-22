@@ -15,7 +15,7 @@ class ProdList extends Component {
 
     return (
       <List divided selection size='medium'>
-        {prods.map((prod) => <ProdItem title={prod.fullnumber} key={prod.id} id={prod.id} selectProd={this.props.selectProd}/>)}
+        {prods.map((prod) => <ProdItem prod={prod} key={prod.id} selectProd={this.props.selectProd}/>)}
       </List>
     )
   }

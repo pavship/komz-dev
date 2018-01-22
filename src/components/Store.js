@@ -27,6 +27,7 @@ const allDeptsQuery = gql`
         prods {
           id
           fullnumber
+          isSpoiled
         }
       }
     }
