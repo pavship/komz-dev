@@ -12,6 +12,14 @@
   font-size: 1.5rem !important;
 }
 
+.ui.styled.accordion .accordion .title, .ui.styled.accordion .title {
+  color: rgba(0,0,0,.55)
+}
+
+.ui.selection.list .list>.item, .ui.selection.list>.item {
+  color: rgba(0,0,0,.6)
+}
+
 .fs1-25rem {
   font-size: 1.25rem !important;
 }
