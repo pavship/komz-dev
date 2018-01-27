@@ -29,6 +29,9 @@ const allDeptsQuery = gql`
           id
           fullnumber
           isSpoiled
+          hasDefect
+          progress
+          note
         }
       }
     }
