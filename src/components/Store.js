@@ -17,6 +17,7 @@ const allDeptsQuery = gql`
        count
       }
       deptModels {
+        id
         model {
           id
           name

@@ -17,6 +17,7 @@ class ProdItem extends Component {
   render() {
     const {checked} = this.state
     const {fullnumber, isSpoiled} = this.props.prod
+    const progress = 100
 
     return (
       <List.Item onClick={this.handleClick} active={checked}>
