@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import _ from 'lodash'
 
-import { Accordion, Segment, Icon } from 'semantic-ui-react'
+import { Accordion, Segment, Icon, Label, Header } from 'semantic-ui-react'
 import ProdList from './ProdList'
 
 class ModelList extends Component {
@@ -20,7 +20,13 @@ class ModelList extends Component {
 
     const { activeIndex } = this.state
 
-    const deptModels = this.props.deptModels.map((deptModel, i) => (
+    const deptModels = this.props.deptModels.map((deptModel, i) => {
+      const allProdsCount = deptModel.allProds.count
+      const prodsReadyCount = deptModel.prodsReady.count
+      const prodsDefectCount = deptModel.prodsDefect.count
+      const prodsSpoiledCount = deptModel.prodsSpoiled.count
+      const prodsInProgressCount = allProdsCount - prodsReadyCount - prodsDefectCount - prodsSpoiledCount
+      return (
       <div key={deptModel.id} >
         <Accordion.Title
           active={_.includes(activeIndex, i)}
@@ -28,13 +34,47 @@ class ModelList extends Component {
           onClick={this.handleClick}
         >
           <Icon name='dropdown' />
-          {deptModel.model.name + ' ('+deptModel._prodsMeta.count+')'}
+          <Header size='small' as='span'>{deptModel.model.name}
+            <Label color='grey'>
+              {allProdsCount}
+              <Label.Detail>шт</Label.Detail>
+            </Label>
+          </Header>
+          <Label.Group className='komz-ml-21px'>
+            { (prodsReadyCount > 0) &&
+              <Label basic>
+                <Icon name='checkmark' color='green' />
+                {prodsReadyCount}
+                <Label.Detail>ГП</Label.Detail>
+              </Label>
+            }
+            { (prodsInProgressCount > 0) &&
+              <Label basic>
+                {prodsInProgressCount}
+                <Label.Detail>НЗП</Label.Detail>
+              </Label>
+            }
+            { (prodsDefectCount > 0) &&
+              <Label basic>
+                <Icon name='warning sign' color='orange' />
+                {prodsDefectCount}
+                <Label.Detail>ОТКЛОН</Label.Detail>
+              </Label>
+            }
+            { (prodsSpoiledCount > 0) &&
+              <Label basic>
+                <Icon name='broken chain' color='red' />
+                {prodsSpoiledCount}
+                <Label.Detail>БРАК</Label.Detail>
+              </Label>
+            }
+          </Label.Group>
         </Accordion.Title>
         <Accordion.Content active={_.includes(activeIndex, i)}>
           <ProdList prods={deptModel.prods} selectProd={this.props.selectProd}/>
         </Accordion.Content>
       </div>
-    ))
+    )})
 
     return (
       <Accordion>

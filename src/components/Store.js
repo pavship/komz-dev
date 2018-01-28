@@ -22,7 +22,22 @@ const allDeptsQuery = gql`
           id
           name
         }
-        _prodsMeta {
+        allProds: _prodsMeta {
+          count
+        }
+        prodsReady: _prodsMeta(filter: {
+         progress: 100
+        }) {
+          count
+        }
+        prodsDefect: _prodsMeta(filter: {
+         hasDefect: true
+        }) {
+          count
+        }
+        prodsSpoiled: _prodsMeta(filter: {
+         isSpoiled: true
+        }) {
          count
         }
         prods {
