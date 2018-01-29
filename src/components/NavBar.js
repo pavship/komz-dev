@@ -40,12 +40,12 @@ class NavBar extends Component {
                   <Icon name='arrow right' />
                 </Menu.Item>
               } />
-              <Dropdown item icon='options' simple>
+              {/* <Dropdown item icon='options' simple>
                 <Dropdown.Menu>
                   <Dropdown.Header>Вид</Dropdown.Header>
                   <Dropdown.Item active>По участкам</Dropdown.Item>
                   <Dropdown.Item>По продукции</Dropdown.Item>
-                  {/* <Dropdown.Divider />
+                  <Dropdown.Divider />
                   <Dropdown.Header>Участки</Dropdown.Header>
                   <Dropdown.Item>
                     <Icon name='square outline' />
@@ -62,9 +62,9 @@ class NavBar extends Component {
                   <Dropdown.Item>
                     <Icon name='square outline' />
                     Клиенты
-                  </Dropdown.Item> */}
+                  </Dropdown.Item>
                 </Dropdown.Menu>
-              </Dropdown>
+              </Dropdown> */}
             </Menu.Menu>
           }
           <Menu.Menu position='right'>

@@ -18,7 +18,7 @@ const AllDeptsAndModelsQuery = gql`
 `
 
 const CREATE_PROD_MUTATION = gql`
-  mutation CreateProdMutation($createdById: ID!, $deptId: ID!, $modelId: ID!, $melt: Int!, $meltShift: Int, $number: Int!, $year: Int! ) {
+  mutation CreateProdMutation($createdById: ID!, $deptId: ID!, $modelId: ID!, $melt: Int!, $meltShift: Int, $number: Int!, $year: Int!, $progress: Float ) {
     createProd(
       createdById: $createdById,
       deptId: $deptId,
@@ -26,7 +26,8 @@ const CREATE_PROD_MUTATION = gql`
       melt: $melt,
       meltShift: $meltShift,
       number: $number,
-      year: $year
+      year: $year,
+      progress: $progress
     ) {
       id
     }
@@ -48,7 +49,8 @@ class CreateProdModal extends Component {
     melt: '',
     meltShift: 0,
     number: '',
-    year: 17
+    year: 17,
+    progress: ''
   }
   open = () => this.setState({ open: true })
   close = () => this.setState({ open: false })
@@ -127,6 +129,9 @@ class CreateProdModal extends Component {
                 type="number" min="16" max="18"
                 onChange={(e) => this.setState({ year: parseInt(e.target.value, 10) })} value={this.state.year}/>
             </Form.Group>
+            <Form.Input label='Процент завершения' placeholder='%'
+              type="number" min="0" max="100"
+              onChange={(e) => this.setState({ progress: parseInt(e.target.value, 10) })} value={this.state.progress}/>
           </Form>
         </Modal.Content>
         <Modal.Actions>
@@ -144,7 +149,8 @@ class CreateProdModal extends Component {
   _confirm = () => {
     const createdById = localStorage.getItem(GC_USER_ID)
     const { deptId, modelId, melt, meltShift, number, year } = this.state
-    console.log(createdById, deptId, modelId, melt, meltShift, number, year)
+    const progress = this.state.progress || null
+    console.log(createdById, deptId, modelId, melt, meltShift, number, year, progress)
 
     this.props.createProdMutation ({
       variables: {
@@ -154,7 +160,8 @@ class CreateProdModal extends Component {
         melt,
         meltShift,
         number,
-        year
+        year,
+        progress
       }
     })
     this.close()

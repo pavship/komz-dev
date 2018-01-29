@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { List, Progress, Label } from 'semantic-ui-react'
+import { List, Progress, Label, Button } from 'semantic-ui-react'
 
 class ProdItem extends Component {
   state = {
@@ -23,7 +23,9 @@ class ProdItem extends Component {
         <List.Content>
           <List.Icon name={checked ? 'checkmark box' : 'square outline'} />
           {fullnumber}
-          <Label size='small'>{progress || '_'}%</Label>
+          { progress &&
+            <Label size='small'>{progress || '_'}%</Label>
+          }
           { hasDefect &&
             <Label color='orange' tag size='small'>ОТКЛОНЕНИЕ</Label>
           }
@@ -32,7 +34,10 @@ class ProdItem extends Component {
             // <List.Icon floated='right' name='broken chain' color='red' />
           }
         </List.Content>
-        <Progress percent={progress} indicating autoSuccess attached='bottom' />
+        {/* <Button attached='right'>Edit</Button> */}
+        { progress &&
+          <Progress percent={progress} indicating autoSuccess attached='bottom' />
+        }
       </List.Item>
     )
   }
