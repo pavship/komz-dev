@@ -42,7 +42,10 @@ const allDeptsQuery = gql`
         }
         prods {
           id
-          fullnumber
+          melt
+          meltShift
+          number
+          year
           isSpoiled
           hasDefect
           progress
