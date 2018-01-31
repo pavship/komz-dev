@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import _ from 'lodash'
-
 import { Accordion, Segment, Icon, Label, Header } from 'semantic-ui-react'
 import ProdList from './ProdList'
 
@@ -26,10 +25,13 @@ class ModelList extends Component {
       const prodsDefectCount = deptModel.prodsDefect.count
       const prodsSpoiledCount = deptModel.prodsSpoiled.count
       const prodsInProgressCount = allProdsCount - prodsReadyCount - prodsDefectCount - prodsSpoiledCount
+
+      const active = _.includes(activeIndex, i)
+
       return (
       <div key={deptModel.id} >
         <Accordion.Title
-          active={_.includes(activeIndex, i)}
+          active={active}
           index={i}
           onClick={this.handleClick}
         >
@@ -70,9 +72,11 @@ class ModelList extends Component {
             }
           </Label.Group>
         </Accordion.Title>
-        <Accordion.Content active={_.includes(activeIndex, i)}>
-          <ProdList prods={deptModel.prods} selectProd={this.props.selectProd}/>
-        </Accordion.Content>
+        { active &&
+          <Accordion.Content active>
+            <ProdList prods={deptModel.prods} selectProd={this.props.selectProd}/>
+          </Accordion.Content>
+        }
       </div>
     )})
 
