@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { NavLink } from 'react-router-dom'
 import { withRouter } from 'react-router'
 import { Menu, Icon, Message, Dropdown} from 'semantic-ui-react'
-import CreateProdModal from './CreateProdModal'
+import CRUProdModal from './CRUProdModal'
 import MoveModal from './MoveModal'
 
 import { GC_USER_ID, GC_AUTH_TOKEN } from '../constants'
@@ -28,7 +28,7 @@ class NavBar extends Component {
               {/* <Menu.Item icon name='home' as={ NavLink } exact to='/' color='grey'>
                 <Icon name='home' />
               </Menu.Item> */}
-              <CreateProdModal mode='create' id='' trigger={
+              <CRUProdModal mode='create' id='' trigger={
                 <Menu.Item icon link name='create' color='grey'>
                   <Icon name='plus' />
                 </Menu.Item>

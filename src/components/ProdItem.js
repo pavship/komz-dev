@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { List, Progress, Label, Button } from 'semantic-ui-react'
-import CreateProdModal from './CreateProdModal'
+import CRUProdModal from './CRUProdModal'
 
 class ProdItem extends Component {
   state = {
@@ -32,7 +32,7 @@ class ProdItem extends Component {
             {/* <Button size='mini' icon='edit' onClick={this.preventPropagation} /> */}
             {/* <Button size='mini' content='Редакт' icon='edit' labelPosition='right' onClick={this.preventPropagation} /> */}
             {/* <List.Icon name='edit' onClick={this.edit} /> */}
-            <CreateProdModal mode='edit' prod={this.props.prod} trigger={
+            <CRUProdModal mode='edit' prod={this.props.prod} trigger={
               <Button size='mini' content='Редакт' icon='edit' labelPosition='right' onClick={this.preventPropagation} />
             } />
           </List.Content>
