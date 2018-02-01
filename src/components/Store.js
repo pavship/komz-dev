@@ -66,22 +66,29 @@ const moveProds = gql`
 `
 
 class Store extends Component {
-  componentDidMount () {
-    console.log('componentDidMount > ')
-  }
-  componentWillReceiveProps (nextProps) {
-    console.log('props > '+ this.props.user)
-    console.log('nextProps > '+ nextProps.user)
-  }
+  // componentDidMount () {
+  //   console.log('componentDidMount > ')
+  // }
+  // componentWillReceiveProps (nextProps) {
+  //   console.log('props > '+ this.props.user)
+  //   console.log('nextProps > '+ nextProps.user)
+  // }
 
   state={
     // List of selected products to move
-    selectedProds: []
+    selectedProds: [],
+    // List of filtered Depts
+    visibleDeptTypes: ['OWNED', 'TRANSPORT']
   }
   selectProd = (prodId) => {
     const { selectedProds } = this.state
     const newList = _.includes(selectedProds, prodId) ? _.without(selectedProds, prodId) : [...selectedProds, prodId]
     this.setState({ selectedProds: newList })
+  }
+  filterDeptType = (type) => {
+    const {visibleDeptTypes} = this.state
+    const newList = _.includes(visibleDeptTypes, type) ? _.without(visibleDeptTypes, type) : [...visibleDeptTypes, type]
+    this.setState({ visibleDeptTypes: newList })
   }
   moveProds = async (deptId) => {
     const { selectedProds } = this.state
@@ -94,35 +101,24 @@ class Store extends Component {
     console.log(result)
   }
 
+
   render() {
-
     const userId = this.props.user
+    const {visibleDeptTypes} = this.state
 
-    // const query = this.props.allDeptsQuery
     const { allDeptsQuery: { loading, networkStatus, error, allDepts } } = this.props;
-
-    // let depts = []
-
-    // if ( === 7) {
-    //   this.setState({sDepts: allDepts})
-    // }
-
-    // if (query && query.allDepts) {
-    //   this.setState({sDepts: query.allDepts})
-    //   console.log(this.state.deptsState)
-      // deptsClone = query.allDepts.map(dept => Object.assign(dept, {selected: false}))
-      // const deptsClone = _.cloneDeep(query.allDepts)
-      // console.log(deptsClone)
-    // }
 
     return (
       <div>
-        <NavBar user={this.props.user} moveProds={this.moveProds} />
+        <NavBar user={this.props.user} moveProds={this.moveProds} filterDeptType={this.filterDeptType} />
         {/* {networkStatus} */}
         { !userId ? (null) :
           loading ? <div>Загрузка</div> :
           error ? <DataLoadErrorMessage dataTitle='DeptList' /> :
-          <DeptList depts={allDepts} selectProd={this.selectProd} />
+          <DeptList
+            depts={allDepts.filter(dept => _.includes(visibleDeptTypes, dept.type) ? true : false)}
+            selectProd={this.selectProd}
+          />
         }
       </div>
     )
@@ -132,8 +128,8 @@ class Store extends Component {
 
 export default compose (
   graphql( allDeptsQuery, {
-    name: 'allDeptsQuery',
-    options: { notifyOnNetworkStatusChange: true }
+    name: 'allDeptsQuery'
+    // options: { notifyOnNetworkStatusChange: true }
   }),
   graphql( moveProds, { name: 'moveProds' })
 ) (Store)

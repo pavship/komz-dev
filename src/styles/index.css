@@ -32,6 +32,16 @@
   color: rgba(0,0,0,.6)
 }
 
+.komz-navBarSettingsItem i.setting.icon {
+  margin-right: 0 !important
+}
+
+.komz-navBarSettingsItem.ui.dropdown .menu {
+  left:auto;
+  right:0;
+  margin-right:-10px;
+}
+
 .fs1-25rem {
   font-size: 1.25rem !important;
 }
