@@ -80,16 +80,18 @@ class NavBar extends Component {
             </Menu.Menu>
           }
           <Menu.Menu position='right'>
-            <Dropdown item icon='setting' simple className='komz-navBarSettingsItem'>
-              <Dropdown.Menu>
-                {/* <Dropdown.Header>Вид</Dropdown.Header>
-                <Dropdown.Item active>По участкам</Dropdown.Item>
-                <Dropdown.Item>По продукции</Dropdown.Item>
-                <Dropdown.Divider /> */}
-                <Dropdown.Header>Участки</Dropdown.Header>
-                { deptTypeMenuItems }
-              </Dropdown.Menu>
-            </Dropdown>
+            {userId &&
+              <Dropdown item icon='setting' simple className='komz-navBarSettingsItem'>
+                <Dropdown.Menu>
+                  {/* <Dropdown.Header>Вид</Dropdown.Header>
+                  <Dropdown.Item active>По участкам</Dropdown.Item>
+                  <Dropdown.Item>По продукции</Dropdown.Item>
+                  <Dropdown.Divider /> */}
+                  <Dropdown.Header>Участки</Dropdown.Header>
+                  { deptTypeMenuItems }
+                </Dropdown.Menu>
+              </Dropdown>
+            }
             {userId ?
               <Menu.Item icon onClick={() => {
                 localStorage.removeItem(GC_USER_ID)

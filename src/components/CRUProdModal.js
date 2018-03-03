@@ -18,7 +18,7 @@ const allDeptsAndModelsQuery = gql`
 `
 
 const createProdMutation = gql`
-  mutation createProdMutation($createdById: ID!, $deptId: ID!, $modelId: ID!, $melt: Int!, $meltShift: Int, $number: Int!, $year: Int!, $progress: Float ) {
+  mutation createProdMutation($createdById: ID!, $deptId: ID!, $modelId: ID!, $melt: Int!, $meltShift: Int, $number: Int!, $year: Int!, $progress: Float, $hasDefect: Boolean, $isSpoiled: Boolean ) {
     createProd(
       createdById: $createdById,
       deptId: $deptId,
@@ -27,7 +27,9 @@ const createProdMutation = gql`
       meltShift: $meltShift,
       number: $number,
       year: $year,
-      progress: $progress
+      progress: $progress,
+      hasDefect: $hasDefect,
+      isSpoiled: $isSpoiled
     ) {
       id
     }
@@ -35,7 +37,7 @@ const createProdMutation = gql`
 `
 
 const updateProdMutation = gql`
-  mutation updateProdMutation($prodId: ID!, $updatedById: ID!, $melt: Int!, $meltShift: Int, $number: Int!, $year: Int!, $progress: Float) {
+  mutation updateProdMutation($prodId: ID!, $updatedById: ID!, $melt: Int!, $meltShift: Int, $number: Int!, $year: Int!, $progress: Float, $hasDefect: Boolean, $isSpoiled: Boolean) {
     updateProd(
       id: $prodId
       updatedById: $updatedById,
@@ -43,7 +45,9 @@ const updateProdMutation = gql`
       meltShift: $meltShift,
       number: $number,
       year: $year,
-      progress: $progress
+      progress: $progress,
+      hasDefect: $hasDefect,
+      isSpoiled: $isSpoiled
     ) {
       id
     }
@@ -63,6 +67,8 @@ class CRUProdModal extends Component {
       number: '',
       year: '',
       progress: '',
+      hasDefect: false,
+      isSpoiled: false,
       deptIdErr: false,
       modelIdErr: false,
       meltErr: false,
@@ -107,9 +113,25 @@ class CRUProdModal extends Component {
     })
   }
 
+  changeStatus = (e, {name}) => {
+    e.preventDefault()
+    e.stopPropagation()
+    const curVal = this.state[name]
+    // reset statuses
+    this.setState({
+      hasDefect: false,
+      isSpoiled: false
+    })
+    // if supposed, activate status
+    if (!curVal) {
+      this.setState({ [name]: true })
+    }
+  }
+
   confirm = () => {
     const mode = this.props.mode
-    //validation
+
+    //VALIDATION
     const requiredFields = (mode === 'create') ?
       ['deptId', 'modelId', 'melt', 'number', 'year'] :
       ['melt', 'number', 'year']
@@ -129,13 +151,13 @@ class CRUProdModal extends Component {
     //terminate if validation failed
     if (shouldExit) {return null}
 
-    const { id, deptId, modelId, melt, number, year } = this.state
+    const { id, deptId, modelId, melt, number, year, hasDefect, isSpoiled } = this.state
     const meltShift = this.state.meltShift || null
     const progress = this.state.progress || null
 
     if (mode === 'create') {
       const createdById = localStorage.getItem(GC_USER_ID)
-      console.log(createdById, deptId, modelId, melt, meltShift, number, year, progress)
+      console.log(createdById, deptId, modelId, melt, meltShift, number, year, progress, hasDefect, isSpoiled)
       this.props.createProdMutation ({
         variables: {
           createdById,
@@ -145,13 +167,15 @@ class CRUProdModal extends Component {
           meltShift,
           number,
           year,
-          progress
+          progress,
+          hasDefect,
+          isSpoiled
         }
       })
     } else if (mode === 'edit') {
       const updatedById = localStorage.getItem(GC_USER_ID)
       const prodId = id
-      console.log(prodId, updatedById, melt, meltShift, number, year, progress)
+      console.log(prodId, updatedById, melt, meltShift, number, year, progress, hasDefect, isSpoiled)
       this.props.updateProdMutation ({
         variables: {
           prodId,
@@ -160,7 +184,9 @@ class CRUProdModal extends Component {
           meltShift,
           number,
           year,
-          progress
+          progress,
+          hasDefect,
+          isSpoiled
         }
       })
     }
@@ -168,7 +194,7 @@ class CRUProdModal extends Component {
   }
 
   render() {
-    const { open, deptId, modelId, melt, meltShift, number, year, progress, deptIdErr, modelIdErr, meltErr, meltShiftErr, numberErr, yearErr, progressErr } = this.state
+    const { open, deptId, modelId, melt, meltShift, number, year, progress, hasDefect, isSpoiled, deptIdErr, modelIdErr, meltErr, meltShiftErr, numberErr, yearErr, progressErr } = this.state
     const { prod, trigger, mode } = this.props
     let deptOptions = [{ text: 'Участок ', value: '' }]
     let modelOptions = [{ text: 'Вид продукции', value: '' }]
@@ -229,6 +255,21 @@ class CRUProdModal extends Component {
             <Form.Input label='Процент завершения' placeholder='%'
               name='progress' type='number' min='0' max='100' error={progressErr}
               onChange={this.handleIntChange} value={progress}/>
+            <Form.Field>
+              <label>Наличие дефектов</label>
+              <Button.Group>
+                <Button name='hasDefect'
+                  active={hasDefect || null}
+                  color={hasDefect ? 'orange' : null}
+                  onClick={this.changeStatus}
+                >Отклонение</Button>
+                <Button name='isSpoiled'
+                  active={isSpoiled || null}
+                  color={isSpoiled ? 'red' : null}
+                  onClick={this.changeStatus}
+                >Брак</Button>
+              </Button.Group>
+            </Form.Field>
           </Form>
         </Modal.Content>
         <Modal.Actions>
