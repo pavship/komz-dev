@@ -151,9 +151,11 @@ class CRUProdModal extends Component {
     //terminate if validation failed
     if (shouldExit) {return null}
 
-    const { id, deptId, modelId, melt, number, year, hasDefect, isSpoiled } = this.state
+    const { id, deptId, modelId, melt, number, year } = this.state
     const meltShift = this.state.meltShift || null
     const progress = this.state.progress || null
+    const hasDefect = this.state.hasDefect || null
+    const isSpoiled = this.state.isSpoiled || null
 
     if (mode === 'create') {
       const createdById = localStorage.getItem(GC_USER_ID)
