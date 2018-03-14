@@ -131,5 +131,10 @@ export default compose (
     name: 'allDeptsQuery'
     // options: { notifyOnNetworkStatusChange: true }
   }),
-  graphql( moveProds, { name: 'moveProds' })
+  graphql( moveProds, {
+    name: 'moveProds',
+    options: {
+      refetchQueries: ['allDeptsQuery']
+    }
+  })
 ) (Store)

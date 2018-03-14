@@ -289,6 +289,16 @@ class CRUProdModal extends Component {
 
 export default compose(
   graphql(allDeptsAndModelsQuery, { name: 'allDeptsAndModelsQuery' }),
-  graphql(createProdMutation, { name: 'createProdMutation' }),
-  graphql(updateProdMutation, { name: 'updateProdMutation' })
+  graphql(createProdMutation, {
+    name: 'createProdMutation',
+    options: {
+      refetchQueries: ['allDeptsQuery']
+    }
+  }),
+  graphql(updateProdMutation, { 
+    name: 'updateProdMutation',
+    options: {
+      refetchQueries: ['allDeptsQuery']
+    }
+  })
 )(CRUProdModal)
